@@ -6,10 +6,14 @@
 #include "FG_RacingGame/Game/RaceGameMode.h"
 #include "FG_RacingGame/UI/RaceOverlayWidget.h"
 #include "FG_RacingGame/UI/RacePlayerStatusWidget.h"
+#include "Net/UnrealNetwork.h"
 
 ARaceCar::ARaceCar()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+	bAlwaysRelevant = true;
+	NetUpdateFrequency = 60.0f;
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
 	BoxCollision->SetCollisionResponseToAllChannels(ECR_Block);
@@ -61,7 +65,9 @@ void ARaceCar::Tick(float DeltaTime)
 void ARaceCar::SetupPlayerInputComponent(UInputComponent* InputComp)
 {
 	InputComp->BindAxis(TEXT("Accelerate"), this, &ARaceCar::HandleAccelerateInput);
+	InputComp->BindAxis(TEXT("Accelerate"), this, &ARaceCar::Server_HandleAccelerateInput);
 	InputComp->BindAxis(TEXT("TurnRight"), this, &ARaceCar::HandleTurnRightInput);
+	InputComp->BindAxis(TEXT("TurnRight"), this, &ARaceCar::Server_HandleTurnRightInput);
 	InputComp->BindAction(TEXT("ActivatePowerup"), IE_Pressed, this, &ARaceCar::HandleActivatePowerup);
 }
 
@@ -84,6 +90,7 @@ void ARaceCar::HandleAccelerateInput(float Value)
 	);
 
 	MoveComp->DriveForwardInput = Value;
+
 }
 
 void ARaceCar::HandleTurnRightInput(float Value)
@@ -108,4 +115,21 @@ void ARaceCar::EquipPowerup(URacePowerup* NewPowerup)
 	auto* StatusWidget = GameMode->OverlayWidget->StatusWidgets[PlayerIndex];
 
 	StatusWidget->SetEquippedPowerup(NewPowerup);
+}
+
+void ARaceCar::Server_HandleAccelerateInput_Implementation(float Value)
+{
+	HandleAccelerateInput(Value);
+}
+
+void ARaceCar::Server_HandleTurnRightInput_Implementation(float Value)
+{
+	HandleTurnRightInput(Value);
+}
+
+void ARaceCar::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARaceCar, PlayerIndex);
 }

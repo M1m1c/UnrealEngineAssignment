@@ -22,4 +22,11 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Race)
 	int NumberOfPlayers = 1;
+
+	UPROPERTY(Replicated)
+	FTransform SpawnTransform;
+
+private:
+	UFUNCTION()
+	void OnRep_SpawnTransform();
 };
