@@ -60,9 +60,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Driving")
 		float TurnSpeed = 0.5f;
 
-	void ClearUsedMoves(FRaceCarMove LastMove);
+	void ClearUsedMoves(FRaceCarMove PreviousMove);
 
-	void SimulateMove(FRaceCarMove Move);
+	void SimulateMove(const FRaceCarMove& Move);
 
 	UFUNCTION(Server, Reliable)
 	void Server_SendMove(FRaceCarMove NewMove);

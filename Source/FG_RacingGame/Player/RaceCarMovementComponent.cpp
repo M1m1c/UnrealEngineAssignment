@@ -49,7 +49,7 @@ void URaceCarMovementComponent::Server_SendMove_Implementation(FRaceCarMove NewM
 	ServerState.Velocity = Velocity;
 }
 
-void URaceCarMovementComponent::SimulateMove(FRaceCarMove Move)
+void URaceCarMovementComponent::SimulateMove(const FRaceCarMove& Move)
 {
 	AActor* Owner = GetOwner();
 
@@ -123,6 +123,11 @@ void URaceCarMovementComponent::OnRep_ServerState()
 	GetOwner()->SetActorTransform(ServerState.Transform);
 	Velocity = ServerState.Velocity;
 	ClearUsedMoves(ServerState.PreviousMove);
+
+	for (const FRaceCarMove& Move : UnusedMoves)
+	{
+		SimulateMove(Move);
+	}
 }
 
 
