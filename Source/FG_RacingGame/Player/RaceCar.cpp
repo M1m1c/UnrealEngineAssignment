@@ -20,6 +20,7 @@ ARaceCar::ARaceCar()
 	RootComponent = BoxCollision;
 
 	MoveComp = CreateDefaultSubobject<URaceCarMovementComponent>(TEXT("MovementComponent"));
+	MoveComp->SetIsReplicated(true);
 }
 
 void ARaceCar::BeginPlay()
@@ -37,7 +38,7 @@ void ARaceCar::EndPlay(const EEndPlayReason::Type Reason)
 
 void ARaceCar::Tick(float DeltaTime)
 {
-	if (Powerup != nullptr)
+	/*if (Powerup != nullptr)
 	{
 		FColor MsgColor = bPowerupActivated ? FColor::Green : FColor::Red;
 
@@ -59,15 +60,15 @@ void ARaceCar::Tick(float DeltaTime)
 				EquipPowerup(nullptr);
 			}
 		}
-	}
+	}*/
 }
 
 void ARaceCar::SetupPlayerInputComponent(UInputComponent* InputComp)
 {
 	InputComp->BindAxis(TEXT("Accelerate"), this, &ARaceCar::HandleAccelerateInput);
-	InputComp->BindAxis(TEXT("Accelerate"), this, &ARaceCar::Server_HandleAccelerateInput);
+	//InputComp->BindAxis(TEXT("Accelerate"), this, &ARaceCar::Server_HandleAccelerateInput);
 	InputComp->BindAxis(TEXT("TurnRight"), this, &ARaceCar::HandleTurnRightInput);
-	InputComp->BindAxis(TEXT("TurnRight"), this, &ARaceCar::Server_HandleTurnRightInput);
+	//InputComp->BindAxis(TEXT("TurnRight"), this, &ARaceCar::Server_HandleTurnRightInput);
 	InputComp->BindAction(TEXT("ActivatePowerup"), IE_Pressed, this, &ARaceCar::HandleActivatePowerup);
 }
 
@@ -82,12 +83,12 @@ void ARaceCar::HandleActivatePowerup()
 
 void ARaceCar::HandleAccelerateInput(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(
+	/*GEngine->AddOnScreenDebugMessage(
 		INDEX_NONE,
 		0.f,
 		FColor::Magenta,
 		FString::Printf(TEXT("Accelerate: %f"), Value)
-	);
+	);*/
 
 	MoveComp->DriveForwardInput = Value;
 
@@ -95,12 +96,12 @@ void ARaceCar::HandleAccelerateInput(float Value)
 
 void ARaceCar::HandleTurnRightInput(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(
+	/*GEngine->AddOnScreenDebugMessage(
 		INDEX_NONE,
 		0.f,
 		FColor::Red,
 		FString::Printf(TEXT("Turn right: %f"), Value)
-	);
+	);*/
 
 	MoveComp->DriveSteerInput = Value;
 }
@@ -111,10 +112,10 @@ void ARaceCar::EquipPowerup(URacePowerup* NewPowerup)
 	if (Powerup != nullptr)
 		Powerup->Setup();
 
-	auto* GameMode = ARaceGameMode::Get(this);
-	auto* StatusWidget = GameMode->OverlayWidget->StatusWidgets[PlayerIndex];
+	//auto* GameMode = ARaceGameMode::Get(this);
+	//auto* StatusWidget = GameMode->OverlayWidget->StatusWidgets[PlayerIndex];
 
-	StatusWidget->SetEquippedPowerup(NewPowerup);
+	//StatusWidget->SetEquippedPowerup(NewPowerup);
 }
 
 void ARaceCar::Server_HandleAccelerateInput_Implementation(float Value)
