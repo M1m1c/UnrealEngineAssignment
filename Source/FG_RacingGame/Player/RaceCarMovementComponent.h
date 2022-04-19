@@ -47,6 +47,17 @@ public:
 
 	void AddForce(const FVector& Force);
 	void AddImpulse(const FVector& Impulse);
+	void ClearUsedMoves(FRaceCarMove PreviousMove);
+
+	void SimulateMove(const FRaceCarMove& Move);
+
+	FRaceCarMove CreateNewMove(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+		void Server_SendMove(FRaceCarMove NewMove);
+	UFUNCTION()
+		void OnRep_ServerState();
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Driving")
 		float Acceleration = 500.f;
@@ -60,20 +71,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Driving")
 		float TurnSpeed = 0.5f;
 
-	void ClearUsedMoves(FRaceCarMove PreviousMove);
-
-	void SimulateMove(const FRaceCarMove& Move);
-
-	UFUNCTION(Server, Reliable)
-	void Server_SendMove(FRaceCarMove NewMove);
-
-
 	UPROPERTY(ReplicatedUsing=OnRep_ServerState)
 	FRaceCarState ServerState;
-
-
-	UFUNCTION()
-	void OnRep_ServerState();
 
 	FVector Velocity;
 
