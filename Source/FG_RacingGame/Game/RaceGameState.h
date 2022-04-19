@@ -5,6 +5,7 @@
 #include "RaceGameState.generated.h"
 
 class ARaceCar;
+class ARaceCamera;
 
 UCLASS()
 class ARaceGameState : public AGameState
@@ -17,4 +18,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		TArray<ARaceCar*> Cars;
+
+	UPROPERTY(BlueprintReadOnly)
+		ARaceCamera* Camera;
+
 };
