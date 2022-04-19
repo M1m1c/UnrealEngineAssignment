@@ -32,4 +32,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Camera)
 	float MinCameraArmLength = 300.0f;
 
+	UPROPERTY(Replicated)
+	float CurrentCameraArmLength;
+
 };
