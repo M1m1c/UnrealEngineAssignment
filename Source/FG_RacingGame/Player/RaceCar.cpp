@@ -7,6 +7,7 @@
 #include "FG_RacingGame/UI/RaceOverlayWidget.h"
 #include "FG_RacingGame/UI/RacePlayerStatusWidget.h"
 #include "Net/UnrealNetwork.h"
+#include "DrawDebugHelpers.h"
 
 ARaceCar::ARaceCar()
 {
@@ -38,6 +39,9 @@ void ARaceCar::EndPlay(const EEndPlayReason::Type Reason)
 
 void ARaceCar::Tick(float DeltaTime)
 {
+	FString temp;
+	temp.AppendInt(PlayerIndex);
+	DrawDebugString(GetWorld(), FVector(0, 0, 100), temp, this, FColor::White, DeltaTime);
 	/*if (Powerup != nullptr)
 	{
 		FColor MsgColor = bPowerupActivated ? FColor::Green : FColor::Red;
@@ -117,6 +121,9 @@ void ARaceCar::EquipPowerup(URacePowerup* NewPowerup)
 
 	//StatusWidget->SetEquippedPowerup(NewPowerup);
 }
+
+
+//TODO Cleanup code and maybe add checkpoints/laps
 
 void ARaceCar::Server_HandleAccelerateInput_Implementation(float Value)
 {
