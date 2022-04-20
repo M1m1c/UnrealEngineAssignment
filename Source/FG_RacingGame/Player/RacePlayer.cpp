@@ -39,3 +39,18 @@ void ARacePlayer::BeginPlay()
 	AvailableCar->PlayerIndex = GetUniqueID();
 	Possess(AvailableCar);
 }
+
+void ARacePlayer::IncreaseLapCount_Implementation()
+{
+	LapCount++;
+}
+
+void ARacePlayer::SetCheckpointIndex(int newIndex)
+{
+	CheckpointIndex = newIndex;
+}
+
+int ARacePlayer::GetCheckpointIndex()
+{
+	return CheckpointIndex;
+}
