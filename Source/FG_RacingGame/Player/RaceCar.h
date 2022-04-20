@@ -27,12 +27,6 @@ public:
 	void EquipPowerup(URacePowerup* NewPowerup);
 	bool HasEquippedPowerup() { return Powerup != nullptr; }
 
-	UFUNCTION(Server, Reliable)
-	void Server_HandleAccelerateInput(float Value);
-
-	UFUNCTION(Server, Reliable)
-	void Server_HandleTurnRightInput(float Value);
-
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	int PlayerIndex = 0;
 
