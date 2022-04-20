@@ -13,16 +13,18 @@ void URaceCarMovementComponent::TickComponent(float DeltaTime, enum ELevelTick T
 	auto Pawn = Cast<APawn>(Owner);
 	if (!ensure(Pawn)) { return; }
 	
-	auto localControl = Pawn->IsLocallyControlled();
+	auto LocalControl = Pawn->IsLocallyControlled();
+	auto HasAuthority = Pawn->HasAuthority();
 	auto Role = Pawn->GetRemoteRole();
 
-	if (Role == ENetRole::ROLE_AutonomousProxy && localControl)
+	if (!HasAuthority && LocalControl)
 	{
 		auto Move = CreateNewMove(DeltaTime);
 		UnusedMoves.Add(Move);
 		Server_SendMove(Move);
+		SimulateMove(Move);
 	}
-	else if(Role == ENetRole::ROLE_Authority && localControl)
+	else if(HasAuthority && LocalControl)
 	{
 		auto Move = CreateNewMove(DeltaTime);
 		Server_SendMove(Move);
@@ -41,14 +43,6 @@ void URaceCarMovementComponent::AddForce(const FVector& Force)
 void URaceCarMovementComponent::AddImpulse(const FVector& Impulse)
 {
 	Velocity += Impulse;
-}
-
-void URaceCarMovementComponent::Server_SendMove_Implementation(FRaceCarMove NewMove)
-{
-	SimulateMove(NewMove);
-	ServerState.PreviousMove = NewMove;
-	ServerState.Transform = GetOwner()->GetActorTransform();
-	ServerState.Velocity = Velocity;
 }
 
 void URaceCarMovementComponent::SimulateMove(const FRaceCarMove& Move)
@@ -130,6 +124,16 @@ FRaceCarMove URaceCarMovementComponent::CreateNewMove(float DeltaTime)
 	return Move;
 }
 
+//Sends move to server and simulates it
+void URaceCarMovementComponent::Server_SendMove_Implementation(FRaceCarMove NewMove)
+{
+	SimulateMove(NewMove);
+	ServerState.PreviousMove = NewMove;
+	ServerState.Transform = GetOwner()->GetActorTransform();
+	ServerState.Velocity = Velocity;
+}
+
+//Updates position and simulate moves that have been missed
 void URaceCarMovementComponent::OnRep_ServerState()
 {
 	GetOwner()->SetActorTransform(ServerState.Transform);
