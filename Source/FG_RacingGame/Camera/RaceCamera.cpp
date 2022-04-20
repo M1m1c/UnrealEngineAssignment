@@ -16,7 +16,7 @@ ARaceCamera::ARaceCamera()
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(Root);
-	CameraArm->TargetArmLength = 800.0f; // The camera follows at this distance behind the character	
+	CameraArm->TargetArmLength = 800.0f;	
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
@@ -32,7 +32,6 @@ void ARaceCamera::BeginPlay()
 	{
 		SetReplicates(true);
 		SetReplicateMovement(true);
-		//CameraArm->SetIsReplicated(true);
 	}
 }
 
